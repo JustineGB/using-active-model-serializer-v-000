@@ -3,14 +3,26 @@ class PostsController < ApplicationController
 
   def index
     @posts = Post.all
-    render json: @posts, status: 200
+    #render json: @posts, status: 200
+    respond_to do |format|
+      format.html { render :index }
+      format.json { render json: @posts, status: 200}
+    end
   end
 
+  # def show
+  #   @post = Post.find(params[:id])
+  #   #render json: PostSerializer.serialize(@post)
+  #   render json: @post, status: 200
+  # end
   def show
     @post = Post.find(params[:id])
-    #render json: PostSerializer.serialize(@post)
-    render json: @post, status: 200
+    render json: @post.to_json(only: [:title, :description, :id],
+                              include: [author: { only: [:name]}])
+
   end
+
+
 
   def new
     @post = Post.new
